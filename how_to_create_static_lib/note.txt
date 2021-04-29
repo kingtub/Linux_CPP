@@ -1,0 +1,27 @@
+Linux创建静态库过程如下：
+
+1、首先，将代码文件编译成目标文件.o（Math.o）
+g++ -c Math.cpp
+注意带参数-c，否则直接编译为可执行文件
+
+2、然后，通过ar工具将目标文件打包成.a静态库文件
+ar -crv libstaticmath.a Math.o
+生成静态库libstaticmath.a 。
+（大一点的项目会编写makefile文件（CMake等等工程管理工具）来生成静态库，输入多个命令太麻烦了。）
+
+
+
+使用静态库
+
+1、写好测试代码
+TestStaticLibrary.cpp
+
+2、编译
+Linux下使用静态库，只需要在编译的时候，指定静态库的搜索路径（-L选项）、指定静态库名（不需要lib前缀和.a后缀，-l选项）。
+g++ -o TestStaticLibrary.o TestStaticLibrary.cpp -L./ -lstaticmath
+# -L：表示要连接的库所在目录
+# -l：指定链接时需要的库，编译器查找连接库时有隐含的命名规则，即在给出的名字前面加上lib，后面加上.a或.so来确定库的名称。
+
+3、执行
+$ ./TestStaticLibrary.o 
+
