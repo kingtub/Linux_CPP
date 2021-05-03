@@ -27,3 +27,5 @@ g++ -o TestDynamicLibrary.o TestDynamicLibrary.cpp -L./ -ldynmath
 3、运行可执行文件
 $ ./TestDynamicLibrary.o
 报错，说是找不到动态库，把动态库libdynmath.so复制到/usr/lib下，可运行成功了。
+或者另一种方式，在当前终端运行：LD_LIBRARY_PATH=.  ，以及  export LD_LIBRARY_PATH，
+然后再执行上述命令，就可以找到库了。
