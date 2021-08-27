@@ -1,0 +1,32 @@
+制作静态库的过程：
+1、创建两个C文件：bill.c，fred.c
+2、创建一个头文件：bill_fred.h
+3、把C文件编译成目标文件：
+gcc -c fred.c bill.c
+-c选项的作用是阻止编译器创建一个完整的程序。这时得到fred.o, bill.o。
+4、编写使用以上两个函数库的文件use_bill_fred.c。
+5、编译use_bill_fred.c，直接使用目标文件：
+gcc -o use_fred_bill use_bill_fred.c fred.o bill.o
+
+
+以上即可生成可执行文件use_fred_bill 。
+
+现在来创建静态库
+使用ar程序创建一个归档文件——静态库。
+ar crv libfoo.a bill.o fred.o
+现在生成了静态库libfoo.a，再编译一次：
+gcc -o use_fred_bill use_bill_fred.c libfoo.a
+或者
+gcc -o use_fred_bill use_bill_fred.c -L. -lfoo
+
+使用nm命令查看可执行文件包含了哪些函数：
+nm ./use_fred_bill 
+
+共享库
+当一个程序使用共享库时，它的链接方式是这样的：程序本身不再包含函数代码，而是引用运行时可访问的共享代码。
+当编译好的程序被装载到内存中执行时，函数引用被解析并产生对共享库的调用，如果有必要，共享库才被加载到内存中。
+通过这种方法，系统可以只保留共享库的一份副本供许多应用程序同时使用，并且在磁盘上也仅保存一份。
+另一个好处是共享库的更新可以独立于依赖它的应用程序。
+对Linux系统来说，负责装载共享库并解析客户程序函数引用的程序（动态装载器）是ld.so，也可能是其他的文件。
+用于搜索共享库的额外位置可以在文件/etc/ld.so.conf中配置，如果修改了这个文件，你需要执行命令ldconfig来处理它。
+你可以通过运行工具ldd来查看一个程序需要的共享库。
